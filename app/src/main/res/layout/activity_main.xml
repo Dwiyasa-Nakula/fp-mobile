@@ -1,0 +1,158 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="0dp"
+    tools:context=".MainActivity">
+
+    <!-- CardView for Profile Section -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="848dp"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp">
+
+            <!-- Profile Image -->
+            <ImageView
+                android:id="@+id/profile_image"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/round_shape"
+                android:clipToOutline="true"
+                android:contentDescription="profile picture"
+                android:src="@drawable/profile_pic" />
+
+            <!-- Sidebar Button -->
+            <ImageButton
+                android:id="@+id/sidebar_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="280dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Sidebar"
+                android:src="@drawable/sidebar_icon" />
+        </LinearLayout>
+
+        <!-- Welcome Text with margin to create space -->
+        <TextView
+            android:id="@+id/welcome_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="75dp"
+            android:text="Welcome, Pak Budi"
+            android:textSize="24sp" />
+
+        <!-- Performance Check with margin to create space -->
+        <TextView
+            android:id="@+id/check_performance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="110dp"
+            android:paddingBottom="6dp"
+            android:text="Periksa Performa Perjalanan Anda →"
+            android:textSize="16sp" />
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Dashboard Section -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DASHBOARD"
+        android:textSize="15sp"
+        android:padding="16dp" />
+
+    <!-- Dashboard Card -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dashboard_card_background"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_margin="16dp">
+
+        <!-- Company Info -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PT. Logistik"
+            android:textSize="18sp"
+            android:padding="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PT. Logis"
+            android:textSize="16sp"
+            android:padding="8dp" />
+
+        <!-- Horizontal Layout for Stats -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="110 Km"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="1 h 32 m"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="140 km/h"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <!-- Warnings and Date -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total Peringatan: 12"
+            android:textSize="14sp"
+            android:paddingStart="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="7.5% kinerjanya lebih buruk dari perjalanan terakhir"
+            android:textSize="14sp"
+            android:paddingStart="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="17 September 2021, 15:40"
+            android:textAlignment="center"
+            android:textSize="12sp"
+            android:padding="8dp" />
+    </LinearLayout>
+</LinearLayout>
