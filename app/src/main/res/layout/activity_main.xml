@@ -91,14 +91,25 @@
             android:layout_height="wrap_content"
             android:text="PT. Logistik"
             android:textSize="18sp"
-            android:padding="8dp" />
+            android:padding="0dp"
+            android:drawablePadding="8dp"
+            app:drawableStartCompat="@drawable/ic_location" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="10dp"
+            android:background="@drawable/dotted_line"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="PT. Logis"
             android:textSize="16sp"
-            android:padding="8dp" />
+            android:padding="0dp"
+            android:drawablePadding="8dp"
+            app:drawableStartCompat="@drawable/ic_location" />
 
         <!-- Horizontal Layout for Stats -->
         <LinearLayout
