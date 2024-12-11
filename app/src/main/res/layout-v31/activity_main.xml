@@ -4,143 +4,281 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:padding="0dp"
     tools:context=".MainActivity">
 
+    <!-- CardView for Profile Section -->
     <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
+        android:layout_width="848dp"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="6dp"
-        app:cardElevation="4dp"
-        android:background="@color/black">
+        android:background="@color/black"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp">
 
         <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp">
 
+            <!-- Profile Image -->
             <ImageView
                 android:id="@+id/profile_image"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="16dp"
                 android:background="@drawable/round_shape"
-                android:src="@drawable/profile_pic"
-                android:clipToOutline="true" />
+                android:clipToOutline="true"
+                android:contentDescription="profile picture"
+                android:src="@drawable/profile_pic" />
 
-        <ImageButton
-            android:id="@+id/sidebar_button"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="278dp"
-            android:background="@android:color/transparent"
-            android:contentDescription="Sidebar"
-            android:src="@drawable/sidebar_icon" />
-    </LinearLayout>
+            <!-- Sidebar Button -->
+            <ImageButton
+                android:id="@+id/sidebar_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="280dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Sidebar"
+                android:src="@drawable/sidebar_icon" />
+        </LinearLayout>
+
+        <!-- Welcome Text with margin to create space -->
+        <TextView
+            android:id="@+id/welcome_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="75dp"
+            android:text="Welcome, Pak Budi"
+            android:textSize="24sp" />
+
+        <!-- Performance Check with margin to create space -->
+        <TextView
+            android:id="@+id/check_performance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="110dp"
+            android:layout_marginBottom="8dp"
+            android:text="Periksa Performa Perjalanan Anda →"
+            android:textSize="16sp" />
+
     </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:id="@+id/welcome_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="16dp"
-        android:text="Welcome, Pak Budi"
-        android:textSize="24sp" />
-
-    <TextView
-        android:id="@+id/check_performance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="16dp"
-        android:text="Periksa Performa Perjalanan Anda →"
-        android:textSize="16sp" />
-
+    <!-- Dashboard Section -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="16dp"
         android:text="DASHBOARD"
-        android:textSize="15sp" />
+        android:textSize="15sp"
+        android:layout_marginTop="8dp"
+        android:padding="4dp" />
 
+    <!-- Dashboard Card -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
         android:background="@drawable/dashboard_card_background"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:layout_margin="16dp">
 
+        <!-- Company Info -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="8dp"
             android:text="PT. Logistik"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:padding="0dp"
+            android:drawablePadding="8dp"
+            app:drawableStartCompat="@drawable/ic_location" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="10dp"
+            android:background="@drawable/dotted_line"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="8dp"
             android:text="PT. Logis"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:padding="0dp"
+            android:drawablePadding="8dp"
+            app:drawableStartCompat="@drawable/ic_location" />
+
+        <!-- Horizontal Layout for Stats -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@color/black"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <!-- First Section: 110 Km and Total Jarak -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="110 Km"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total Jarak"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/black"/>
+
+                <!-- Second Section: 1 h 32 m and Waktu -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1 h 32 m"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Waktu"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/black"/>
+
+                <!-- Third Section: 140 km/h and Kecepatan Tertinggi -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="140 km/h"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:text="Kecepatan Tertinggi"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <!-- Warnings and Date -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="8dp">
+
+            <!-- Round Shape ImageView -->
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/dot_shape"
+                android:contentDescription="Circle" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Peringatan: 12"
+                android:textSize="14sp"
+                android:paddingStart="8dp" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="3">
+            android:gravity="center_vertical"
+            android:padding="8dp">
+
+            <!-- Round Shape ImageView -->
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/dot_shape"
+                android:contentDescription="Circle" />
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="110 Km"
-                android:textSize="16sp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="1 h 32 m"
-                android:textSize="16sp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="140 km/h"
-                android:textSize="16sp" />
+                android:text="7.5% kinerjanya lebih buruk dari perjalanan terakhir"
+                android:textSize="14sp"
+                android:paddingStart="8dp" />
 
         </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="8dp"
-            android:text="Total Peringatan: 12"
-            android:textSize="14sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingStart="8dp"
-            android:text="7.5% kinerjanya lebih buruk dari perjalanan terakhir"
-            android:textSize="14sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
             android:text="17 September 2021, 15:40"
             android:textAlignment="center"
-            android:textSize="12sp" />
+            android:textSize="11sp"
+            android:paddingTop="16dp"
+            android:padding="0dp" />
 
-
+        <Button
+            android:id="@+id/navigate_to_ai_detection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:text="Go to AI Detection"
+            android:textSize="16sp" />
     </LinearLayout>
-
 </LinearLayout>
