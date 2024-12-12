@@ -7,9 +7,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,6 +41,7 @@ import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.List;
@@ -48,7 +49,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class AIDetection extends AppCompatActivity {
-    private static final String MODEL_FILE = "tflite_models.tflite"; // Replace with your model file name
+    private static final String MODEL_FILE = "model.tflite"; // Replace with your model file name
     private Interpreter tflite;
     private ExecutorService cameraExecutor;
     private FaceDetector faceDetector;
@@ -128,6 +129,7 @@ public class AIDetection extends AppCompatActivity {
 
     private long lastInferenceTime = 0;
     private static final long INFERENCE_INTERVAL_MS = 500; // Adjust as needed
+
     @OptIn(markerClass = ExperimentalGetImage.class)
     private void processImage(ImageProxy imageProxy) {
         if (System.currentTimeMillis() - lastInferenceTime < INFERENCE_INTERVAL_MS) {
@@ -171,22 +173,33 @@ public class AIDetection extends AppCompatActivity {
 
     @OptIn(markerClass = ExperimentalGetImage.class)
     private Bitmap convertImageProxyToBitmap(ImageProxy imageProxy) {
-        Image.Plane[] planes = (Image.Plane[]) imageProxy.getPlanes();
-        ByteBuffer yBuffer = planes[0].getBuffer();
-        ByteBuffer uBuffer = planes[1].getBuffer();
-        ByteBuffer vBuffer = planes[2].getBuffer();
+        // Get the planes from the ImageProxy
+        ImageProxy.PlaneProxy[] planes = imageProxy.getPlanes();
 
+        // Get the Y, U, and V buffers from the planes
+        ByteBuffer yBuffer = planes[0].getBuffer();  // Y plane
+        ByteBuffer uBuffer = planes[1].getBuffer();  // U plane
+        ByteBuffer vBuffer = planes[2].getBuffer();  // V plane
+
+        // Create a byte array that holds NV21 data
         byte[] nv21 = new byte[yBuffer.remaining() + uBuffer.remaining() + vBuffer.remaining()];
+
+        // Copy the Y, U, and V planes into the nv21 array
         yBuffer.get(nv21, 0, yBuffer.remaining());
         vBuffer.get(nv21, yBuffer.remaining(), vBuffer.remaining());
         uBuffer.get(nv21, yBuffer.remaining() + vBuffer.remaining(), uBuffer.remaining());
 
-        // Convert NV21 to Bitmap
+        // Convert the NV21 byte array to a Bitmap
         YuvImage yuvImage = new YuvImage(nv21, ImageFormat.NV21, imageProxy.getWidth(), imageProxy.getHeight(), null);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         yuvImage.compressToJpeg(new Rect(0, 0, imageProxy.getWidth(), imageProxy.getHeight()), 100, out);
         byte[] jpegData = out.toByteArray();
-        return BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length);
+
+        // Close the ImageProxy
+        imageProxy.close();
+
+        return bitmap;
     }
 
     private MappedByteBuffer loadModelFile() throws IOException {
@@ -197,32 +210,53 @@ public class AIDetection extends AppCompatActivity {
         return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
     }
 
-    private void detectFatigue(Bitmap bitmap) {
-        // Resize bitmap to the model's expected input size (e.g., 224x224)
-        Bitmap resizedBitmap = resizeBitmap(bitmap, 224, 224); // Example size, adjust based on your model
+    private Bitmap resizeBitmap(Bitmap originalBitmap) {
+        return Bitmap.createScaledBitmap(originalBitmap, 145, 145, true); // Resizing to 145x145 as required by the model
+    }
 
-        // Convert to TensorImage
-        TensorImage tensorImage = new TensorImage(DataType.FLOAT32);
+    private void detectFatigue(Bitmap bitmap) {
+        // Resize the bitmap to the expected input size for the model
+        Bitmap resizedBitmap = resizeBitmap(bitmap);
+
+        // Convert the resized bitmap to TensorImage
+        TensorImage tensorImage = new TensorImage(DataType.UINT8);
         tensorImage.load(resizedBitmap);
 
-        // Prepare output buffer
-        TensorBuffer outputBuffer = TensorBuffer.createFixedSize(new int[]{1, 2}, DataType.FLOAT32);
+        // Access the image buffer and allocate normalized buffer
+        ByteBuffer byteBuffer = tensorImage.getBuffer();
+        ByteBuffer normalizedBuffer = ByteBuffer.allocateDirect(145 * 145 * 3 * 4); // Adjust to input size
+        normalizedBuffer.order(ByteOrder.nativeOrder());
+
+        // Normalize pixel values
+        byteBuffer.rewind();
+        while (byteBuffer.hasRemaining()) {
+            float pixelValue = (byteBuffer.get() & 0xFF) / 255f;
+            normalizedBuffer.putFloat(pixelValue);
+        }
+        normalizedBuffer.rewind();
+
+        // Load normalized data into TensorBuffer
+        TensorBuffer tensorBuffer = TensorBuffer.createFixedSize(new int[]{1, 145, 145, 3}, DataType.FLOAT32);
+        tensorBuffer.loadBuffer(normalizedBuffer);
+
+        // Create a buffer for the output (e.g., shape [1, 2])
+        TensorBuffer outputBuffer = TensorBuffer.createFixedSize(new int[]{1, 4}, DataType.FLOAT32);
 
         // Run inference
-        tflite.run(tensorImage.getBuffer(), outputBuffer.getBuffer().rewind());
+        tflite.run(tensorBuffer.getBuffer(), outputBuffer.getBuffer().rewind());
 
+        // Process the output
         float[] output = outputBuffer.getFloatArray();
         Log.d("FatigueDetection", "Output: " + output[0] + ", " + output[1]);
 
-        if (output[1] > output[0]) {
+        TextView statusTextView = findViewById(R.id.status_text);
+        if (output[1] < output[0]) {
             Log.d("FatigueDetection", "Fatigue detected!");
+            runOnUiThread(() -> statusTextView.setText("Status: Fatigue Detected!"));
         } else {
             Log.d("FatigueDetection", "No fatigue detected.");
+            runOnUiThread(() -> statusTextView.setText("Status: No Fatigue Detected."));
         }
-    }
-
-    private Bitmap resizeBitmap(Bitmap bitmap, int width, int height) {
-        return Bitmap.createScaledBitmap(bitmap, width, height, true);
     }
 
     @Override

@@ -31,7 +31,12 @@
         android:layout_centerHorizontal="true"
         android:text="Status: Monitoring"
         android:textSize="16sp"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:padding="8dp"
+        android:background="@android:color/white"
+        android:elevation="4dp" />
+
 
     <TextView
         android:id="@+id/accelerometer_status"
