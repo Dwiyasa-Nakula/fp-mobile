@@ -15,6 +15,10 @@ playServicesMlkitFaceDetection = "17.1.0"
 cameraCore = "1.4.0"
 cameraLifecycle = "1.4.0"
 cameraView = "1.4.0"
+litertApi = "1.0.1"
+litert = "1.0.1"
+litertSupportApi = "1.0.1"
+firebaseCrashlyticsBuildtools = "3.0.2"
 
 [libraries]
 androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCore" }
@@ -33,6 +37,10 @@ play-services-mlkit-face-detection = { group = "com.google.android.gms", name = 
 camera-core = { group = "androidx.camera", name = "camera-core", version.ref = "cameraCore" }
 camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "cameraLifecycle" }
 camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraView" }
+litert-api = { group = "com.google.ai.edge.litert", name = "litert-api", version.ref = "litertApi" }
+litert = { group = "com.google.ai.edge.litert", name = "litert", version.ref = "litert" }
+litert-support-api = { group = "com.google.ai.edge.litert", name = "litert-support-api", version.ref = "litertSupportApi" }
+firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
