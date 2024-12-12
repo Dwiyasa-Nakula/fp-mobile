@@ -6,7 +6,7 @@
     tools:context=".MainActivity">
 
     <!-- Google Map Fragment -->
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
@@ -32,5 +32,19 @@
         android:text="Status: Monitoring"
         android:textSize="16sp"
         android:textColor="@android:color/black" />
+
+    <TextView
+        android:id="@+id/accelerometer_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:text="Accelerometer Status: Normal"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:background="#55000000"
+        android:padding="8dp" />
+
 
 </RelativeLayout>

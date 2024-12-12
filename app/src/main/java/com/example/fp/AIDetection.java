@@ -1,10 +1,16 @@
 package com.example.fp;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
-import android.Manifest;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
@@ -33,20 +39,19 @@ public class AIDetection extends AppCompatActivity {
 
     private FaceDetector faceDetector;
     private ExecutorService cameraExecutor;
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+    private SensorEventListener sensorEventListener;
+    private TextView accelerometerStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_aidetection);
+        accelerometerStatus = findViewById(R.id.accelerometer_status);
 
         // Initialize Executor first
         cameraExecutor = Executors.newSingleThreadExecutor();
-
-        // Initialize Camera
-        initializeCamera();
-
-        // Initialize Face Detection
-        initializeFaceDetection();
 
         Log.d("CameraX", "Starting camera...");
         Log.d("FaceDetection", "Initializing face detector...");
@@ -59,6 +64,15 @@ public class AIDetection extends AppCompatActivity {
             initializeCamera();
         }
 
+        // Initialize Face Detection
+        initializeFaceDetection();
+
+        // Initialize Accelerometer
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        if (sensorManager != null) {
+            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        }
+        setupAccelerometerListener();
     }
 
     @OptIn(markerClass = ExperimentalGetImage.class)
@@ -139,11 +153,50 @@ public class AIDetection extends AppCompatActivity {
         }
     }
 
+    private void setupAccelerometerListener() {
+        if (accelerometer == null) {
+            Log.e("Accelerometer", "No accelerometer found on this device.");
+            return;
+        }
+
+        sensorEventListener = new SensorEventListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+                    float x = event.values[0];
+                    float y = event.values[1];
+                    float z = event.values[2];
+
+                    double magnitude = Math.sqrt(x * x + y * y + z * z);
+
+                    if (magnitude > 12) {
+                        Log.d("Accelerometer", "Sudden movement detected: Magnitude = " + magnitude);
+                        runOnUiThread(() -> accelerometerStatus.setText("Accelerometer Status: Sudden Movement Detected!"));
+                    } else {
+                        runOnUiThread(() -> accelerometerStatus.setText("Accelerometer Status: Normal"));
+                    }
+                }
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+                // No action needed
+            }
+        };
+
+        sensorManager.registerListener(sensorEventListener, accelerometer, SensorManager.SENSOR_DELAY_UI);
+    }
+
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (cameraExecutor != null) {
             cameraExecutor.shutdown();
+        }
+        if (sensorManager != null && sensorEventListener != null) {
+            sensorManager.unregisterListener(sensorEventListener);
         }
     }
 
