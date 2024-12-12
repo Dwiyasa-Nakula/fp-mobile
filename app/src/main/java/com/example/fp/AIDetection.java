@@ -109,6 +109,7 @@ public class AIDetection extends AppCompatActivity {
                 // Image Analysis use case
                 ImageAnalysis imageAnalysis = new ImageAnalysis.Builder()
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                        .setImageQueueDepth(2)
                         .build();
 
                 imageAnalysis.setAnalyzer(cameraExecutor, image -> {
@@ -154,7 +155,8 @@ public class AIDetection extends AppCompatActivity {
             }
         } catch (Exception e) {
             Log.e("ImageAnalysis", "Error processing image", e);
-            imageProxy.close();
+        } finally {
+            imageProxy.close(); // Ensure release even if there's an exception
         }
     }
 
