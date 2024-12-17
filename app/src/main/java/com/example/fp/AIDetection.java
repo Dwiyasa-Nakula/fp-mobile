@@ -1,12 +1,17 @@
 package com.example.fp;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
@@ -54,15 +59,29 @@ public class AIDetection extends AppCompatActivity {
     private ExecutorService cameraExecutor;
     private FaceDetector faceDetector;
 
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+    private SensorEventListener sensorEventListener;
+    private TextView accelerometerStatus;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_aidetection);
+        accelerometerStatus = findViewById(R.id.accelerometer_status);
 
         cameraExecutor = Executors.newSingleThreadExecutor();
 
         // Initialize FaceDetector
         initializeFaceDetector();
+
+        // Initialize Accelerometer
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        if (sensorManager != null) {
+            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        }
+        setupAccelerometerListener();
+
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
@@ -85,6 +104,37 @@ public class AIDetection extends AppCompatActivity {
                 .build();
 
         faceDetector = FaceDetection.getClient(options);
+    }
+
+    private void setupAccelerometerListener() {
+        if (accelerometer == null) {
+            Log.e("Accelerometer", "No accelerometer found on this device.");
+            return;
+        }
+        sensorEventListener = new SensorEventListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+                    float x = event.values[0];
+                    float y = event.values[1];
+                    float z = event.values[2];
+                    double magnitude = Math.sqrt(x * x + y * y + z * z);
+                    if (magnitude > 12) {
+                        Log.d("Accelerometer", "Sudden movement detected: Magnitude = " + magnitude);
+                        runOnUiThread(() -> accelerometerStatus.setText("Accelerometer Status: Sudden Movement Detected!"));
+                    } else {
+                        runOnUiThread(() -> accelerometerStatus.setText("Accelerometer Status: Normal"));
+                    }
+                }
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+                // No action needed
+            }
+        };
+        sensorManager.registerListener(sensorEventListener, accelerometer, SensorManager.SENSOR_DELAY_UI);
     }
 
     @OptIn(markerClass = ExperimentalGetImage.class)
@@ -252,7 +302,7 @@ public class AIDetection extends AppCompatActivity {
         Log.d("FatigueDetection", "Output: " + output[0] + ", " + output[1]);
 
         TextView statusTextView = findViewById(R.id.status_text);
-        if (output[1] < output[0]) {
+        if (output[1] > output[0]) {
             Log.d("FatigueDetection", "Fatigue detected!");
             runOnUiThread(() -> statusTextView.setText("Status: Fatigue Detected!"));
         } else {
@@ -272,6 +322,9 @@ public class AIDetection extends AppCompatActivity {
         }
         if (tflite != null) {
             tflite.close();
+        }
+        if (sensorManager != null && sensorEventListener != null) {
+            sensorManager.unregisterListener(sensorEventListener);
         }
     }
 
